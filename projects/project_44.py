@@ -8,5 +8,3 @@ def decorator_builder(validator):
                 return "error"
         return wrapper
     return decorator
-
-            
