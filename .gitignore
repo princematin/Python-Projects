@@ -13,3 +13,6 @@ progress_log.txt
 result.csv
 esm_famil_data.csv
 my_test.py
+.vscode/
+database.db
+example.db
