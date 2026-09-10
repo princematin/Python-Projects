@@ -9,16 +9,23 @@ class UserManager:
         self.session = session
 
     def create(self, name: str, email: str) -> User:
-        pass
+        user = User(
+            name= name,
+            email= email
+        )
+        self.session.add(user)
+        self.session.commit()
+        return user
 
     def get(self, user_id: int) -> User | None:
-        pass
+        return self.session.get(User, user_id)
 
     def get_all(self):
-        pass
+        return list(self.session.execute(select(User)).scalars())
         
     def get_user_by_email(self, email: str) -> User | None:
-        pass
+        return self.session.execute(select(User).where(User.email == email)).scalar_one_or_none()
 
     def get_most_active_users(self, limit=5):
-        pass
+        result = list(self.session.execute(select(Review.user_id, func.count(Review.user_id)).group_by(Review.user_id).order_by(func.count(Review.user_id).desc()).limit(limit)))
+        return result
