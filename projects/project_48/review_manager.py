@@ -37,3 +37,8 @@ class ReviewManager:
     def get_average_rating_by_user(self):
         return list(self.session.execute(select(Review.user_id, func.avg(Review.rating)).group_by(Review.user_id)))
 
+    def update(self, review_id: int, update_data: dict) -> Review:
+        pass
+
+    def delete(self, review_id: int) -> bool:
+        pass

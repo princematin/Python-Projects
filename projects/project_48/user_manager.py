@@ -29,3 +29,12 @@ class UserManager:
     def get_most_active_users(self, limit=5):
         result = list(self.session.execute(select(Review.user_id, func.count(Review.user_id)).group_by(Review.user_id).order_by(func.count(Review.user_id).desc()).limit(limit)))
         return result
+
+    def update(self, user_id: int, update_data: dict) -> User:
+        pass
+
+    def delete(self, user_id: int) -> bool:
+        pass
+
+    def verify_user(self, user_id: int) -> User:
+        pass

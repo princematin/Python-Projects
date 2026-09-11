@@ -37,3 +37,21 @@ class MovieManager:
     def get_average_rating(self, movie_id: int):
         score = self.session.execute(select(func.avg(Review.rating)).where(Review.movie_id == movie_id)).scalar_one_or_none()
         return score
+
+    def update(self, movie_id: int, update_data: dict) -> Movie:
+        pass
+
+    def delete(self, movie_id: int) -> bool:
+        pass
+
+    def remove_genre(self, movie_id: int, genre: Genre) -> Movie:
+        pass
+
+    def get_top_movies_by_rating(self, limit: int = 10) -> list[tuple]:
+        pass
+
+    def get_movies_by_genre(self, genre_name: str) -> list[Movie]:
+        pass
+
+    def get_top_rated_movies_by_genre(self):
+        pass

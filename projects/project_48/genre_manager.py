@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from models import Genre
+from sqlalchemy import select, func
+from models import Genre, Movie
 
 
 class GenreManager:
@@ -22,3 +22,22 @@ class GenreManager:
 
     def get_genre_by_name(self, name: str) -> Genre | None:
         return self.session.execute(select(Genre).where(Genre.name == name)).scalar_one_or_none()
+
+    def update(self, genre_id: int, new_name: str) -> Genre:
+        result = self.session.get(Genre, genre_id)
+        if not result:
+            return None
+        result.name = new_name
+        self.session.commit()
+        return result
+    
+    def delete(self, genre_id: int) -> bool:
+        result = self.session.get(Genre, genre_id)
+        if not result:
+            return False
+        self.session.delete(result)
+        self.session.commit()
+        return True
+
+    def get_genres_with_most_movies(self) -> list[tuple]:
+        return list(self.session.execute(select(Genre, func.count(Movie.id)).join(Genre.movies).group_by(Genre.id).order_by(func.count(Movie.id).desc())))
