@@ -2,7 +2,7 @@ from datetime import datetime
 from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
-from models import Movie, Genre, Review
+from models import Movie, Genre, Review, MovieGenre
 
 
 class MovieManager:
@@ -72,9 +72,5 @@ class MovieManager:
         return list(self.session.execute(select(Movie).join(Movie.genres).where(Genre.name == genre_name)).scalars())
 
     def get_top_rated_movies_by_genre(self):
-        result = select(Genre.name,Movie.title,func.avg(Review.rating).label("average_rating")).join(Genre.movies).join(Movie.reviews).group_by(Genre.name,Movie.title).order_by(func.avg(Review.rating).desc())
-        result = result.subquery()
-        top_rating = select(result.c.name,func.max(result.c.average_rating).label("max_rating")).group_by(result.c.name)
-        top_rating = top_rating.subquery()
-        final_result = select(result.c.name,result.c.title,result.c.average_rating).join(top_rating,(result.c.name == top_rating.c.name) & (result.c.average_rating == top_rating.c.max_rating)).order_by(result.c.name,result.c.average_rating.desc())
-        return list(self.session.execute(final_result))
+        result = select(Genre.name, Movie.title, func.avg(Review.rating).label("average_rating")).join(MovieGenre, Genre.id == MovieGenre.genre_id).join(Movie, Movie.id == MovieGenre.movie_id).join(Review, Review.movie_id == Movie.id).group_by(Genre.name, Movie.title).order_by(Genre.name, func.avg(Review.rating).desc())
+        return list(self.session.execute(result))

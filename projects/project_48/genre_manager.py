@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy import select, func
-from models import Genre, Movie
+from models import Genre, Movie, MovieGenre
 
 
 class GenreManager:
@@ -40,4 +40,5 @@ class GenreManager:
         return True
 
     def get_genres_with_most_movies(self) -> list[tuple]:
-        return list(self.session.execute(select(Genre, func.count(Movie.id)).join(Genre.movies).group_by(Genre.id).order_by(func.count(Movie.id).desc())))
+        return list(self.session.execute(select(Genre, func.count(MovieGenre.movie_id)).join(MovieGenre, Genre.id == MovieGenre.genre_id).group_by(Genre.id).order_by(func.count(MovieGenre.movie_id).desc())))
+    
