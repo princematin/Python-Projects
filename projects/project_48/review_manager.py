@@ -38,7 +38,18 @@ class ReviewManager:
         return list(self.session.execute(select(Review.user_id, func.avg(Review.rating)).group_by(Review.user_id)))
 
     def update(self, review_id: int, update_data: dict) -> Review:
-        pass
-
+        result = self.session.get(Review, review_id)
+        if not result:
+            return None
+        for key, value in update_data.items():
+            setattr(result, key, value)
+        self.session.commit()
+        return result
+    
     def delete(self, review_id: int) -> bool:
-        pass
+        result = self.session.get(Review, review_id)
+        if not result:
+            return False
+        self.session.delete(result)
+        self.session.commit()
+        return True
