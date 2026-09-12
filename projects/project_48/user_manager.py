@@ -31,10 +31,26 @@ class UserManager:
         return result
 
     def update(self, user_id: int, update_data: dict) -> User:
-        pass
-
+        result = self.session.get(User, user_id)
+        if not result:
+            return None
+        for key, value in update_data.items():
+            setattr(result, key, value)
+        self.session.commit()
+        return result
+    
     def delete(self, user_id: int) -> bool:
-        pass
+        result = self.session.get(User, user_id)
+        if not result:
+            return False
+        self.session.delete(result)
+        self.session.commit()
+        return True
 
     def verify_user(self, user_id: int) -> User:
-        pass
+        result = self.session.get(User, user_id)
+        if not result:
+            return None
+        result.is_verified = True
+        self.session.commit()
+        return result
